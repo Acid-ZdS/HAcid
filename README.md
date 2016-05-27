@@ -32,7 +32,8 @@ Afin d'exécuter HAcid, il faut vous rendre dans le dossier que vous avez
 télécharger, puis exécuter la commande suivante dans le terminal:
 
 ```
-acid examples/test.acid
+cd src
+runhaskell Main.hs ../examples/test.acid
 ```
 
 ## Recommandations
