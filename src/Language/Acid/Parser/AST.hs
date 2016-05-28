@@ -3,19 +3,21 @@ module Language.Acid.Parser.AST (
   , Statement(..)
   , Expr(..)
   , Literal(..)
+  , ModPath
 ) where
 
 import Language.Acid.Types
 
 import Data.List (intercalate)
 
+type ModPath = [String]
 
 newtype Program = Program [Statement]
 
 
 data Statement
 	= Define Name Expr
-	| Import Name
+	| Import ModPath
 	| TLExpr Expr
 
 data Expr
@@ -29,6 +31,7 @@ data Literal
 	| FltL Double
 	| StrL String
 	| ChrL Char
+	| UnitL
 
 
 instance Show Program where
@@ -37,8 +40,9 @@ instance Show Program where
 
 instance Show Statement where
 	show (Define name expr) = show (Call (Variable "define") expr)
-	show (Import name)      = show (Call (Variable "import") (Variable name))
 	show (TLExpr expr)      = show expr
+	show (Import path)      =
+		"(import " ++ intercalate "." path ++ ")"
 
 
 instance Show Expr where

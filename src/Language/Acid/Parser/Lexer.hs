@@ -3,7 +3,7 @@ module Language.Acid.Parser.Lexer (
   , reserved
   , integer, float, charLiteral, stringLiteral
   , parens
-  , lexeme, whiteSpace
+  , lexeme, symbol, whiteSpace
 ) where
 
 import Control.Applicative
@@ -50,6 +50,9 @@ stringLiteral = Token.stringLiteral lexer
 
 parens :: Parser a -> Parser a
 parens = Token.parens lexer
+
+symbol :: String -> Parser String
+symbol = Token.symbol lexer
 
 lexeme :: Parser a -> Parser a
 lexeme = Token.lexeme lexer

@@ -3,6 +3,7 @@ module Language.Acid.Parser.Rules (
 
   , statement
   , define, import', tlExpr
+  , modPath
 
   , expr
   , call, lambda, var, lit
@@ -35,8 +36,11 @@ statement =  try tlExpr
 		 <?> "statement"
 
 define  = parens (reserved "define" >> Define <$> lexeme identifier <*> expr)
-import' = parens (reserved "import" >> Import <$> identifier)
+import' = parens (reserved "import" >> Import <$> modPath)
 tlExpr  = TLExpr <$> expr
+
+modPath :: Parser ModPath
+modPath = sepBy1 identifier (char '.')
 
 expr :: Parser Expr
 call, lambda, lit, var :: Parser Expr
@@ -58,11 +62,12 @@ lambda = parens $ do
 	return (foldr Lambda body params)
 
 
-literal                :: Parser Literal
-intL, fltL, strL, chrL :: Parser Literal
+literal                       :: Parser Literal
+intL, fltL, strL, chrL, unitL :: Parser Literal
 
-literal = try fltL <|> intL <|> strL <|> chrL <?> "literal"
+literal = try fltL <|> intL <|> strL <|> chrL <|> unitL <?> "literal"
 intL = IntL <$> integer
 fltL = FltL <$> float
 strL = StrL <$> stringLiteral
 chrL = ChrL <$> charLiteral
+unitL = symbol "()" >> return UnitL
