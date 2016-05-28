@@ -6,6 +6,7 @@ version:             0.0.0.1
 synopsis:            The Haskell implementation of the Acid language
 
 homepage:            https://zestedesavoir.com/forums/sujet/6129/acid-le-lisp-like-de-la-communaute/
+
 author:              ZesteDeSavoir
 
 category:            Language
@@ -13,6 +14,6 @@ build-type:          Simple
 cabal-version:       >=1.8
 
 executable HAcid
-    main-is:             Main.hs
-    hs-source-dirs:      src
-    build-depends:       base ==4.6.*, parsec ==3.1.*
+  main-is:             Main.hs
+  hs-source-dirs:      src
+  build-depends:       base ==4.6.*, mtl ==2.2.*, containers ==0.5.*, argparser ==0.3.*, parsec ==3.1.*, transformers ==0.5.2.*
