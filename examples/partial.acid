@@ -1,0 +1,3 @@
+(define increment (+ 1))
+
+(print (increment 16))
