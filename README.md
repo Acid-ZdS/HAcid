@@ -33,7 +33,13 @@ télécharger, puis exécuter la commande suivante dans le terminal:
 
 ```
 cd src
-runhaskell Main.hs ../examples/test.acid
+runhaskell Main.hs exec ../examples/test.acid
+```
+
+...ou pour exécuter une commande:
+
+```
+runhaskell Main.hs expr "(+ 38 4)"
 ```
 
 ## Recommandations
