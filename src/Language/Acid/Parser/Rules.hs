@@ -51,14 +51,13 @@ call, lambda, lit, var :: Parser Expr
 
 expr =  try lambda
 	<|> try call
-	<|> try (parens expr)
 	<|> var
 	<|> lit
 	<?> "expression"
 
 var    = Variable <$> identifier
 lit    = Literal <$> literal
-call   = parens (foldl1 Call <$> many1 (lexeme expr))
+call   = parens (Call <$> lexeme expr <*> many (lexeme expr))
 lambda = parens $ do
 	reserved "lambda"
 	params <- parens (many1 (lexeme identifier))

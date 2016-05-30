@@ -20,48 +20,36 @@ defaultEnv = Map.fromList [
 	  , ("/",     divF)
 	  , ("print", printF) ]
 	where
-		addF = HLam $ \case
-			IntV x -> return $ HLam $ \case
-				IntV y -> return $ IntV (x + y)
-				FltV y -> return $ FltV (fromInteger x + y)
-				_      -> throwError (CustomError "Expected integer of float")
-			FltV x -> return $ HLam $ \case
-				IntV y -> return $ FltV (x + fromInteger y)
-				FltV y -> return $ FltV (x + y)
-				_      -> throwError (CustomError "Expected integer of float")
-			_      -> throwError (CustomError "Expected integer of float")
+		addF = Variadic (IntV 0) $ \ a b ->
+			case (a, b) of
+				(IntV x, IntV y) -> return $ IntV (x + y)
+				(IntV x, FltV y) -> return $ FltV (fromInteger x + y)
+				(FltV x, IntV y) -> return $ FltV (x + fromInteger y)
+				(FltV x, FltV y) -> return $ FltV (x + y)
+				_                -> throwError (CustomError "Expected integer of float")
 
-		subF = HLam $ \case
-			IntV x -> return $ HLam $ \case
-				IntV y -> return $ IntV (x - y)
-				FltV y -> return $ FltV (fromInteger x - y)
-				_      -> throwError (CustomError "Expected integer of float")
-			FltV x -> return $ HLam $ \case
-				IntV y -> return $ FltV (x - fromInteger y)
-				FltV y -> return $ FltV (x - y)
-				_      -> throwError (CustomError "Expected integer of float")
-			_      -> throwError (CustomError "Expected integer of float")
+		subF = Variadic (IntV 0) $ \ a b ->
+			case (a, b) of
+				(IntV x, IntV y) -> return $ IntV (x - y)
+				(IntV x, FltV y) -> return $ FltV (fromInteger x - y)
+				(FltV x, IntV y) -> return $ FltV (x - fromInteger y)
+				(FltV x, FltV y) -> return $ FltV (x - y)
+				_                -> throwError (CustomError "Expected integer of float")
 
-		mulF = HLam $ \case
-			IntV x -> return $ HLam $ \case
-				IntV y -> return $ IntV (x * y)
-				FltV y -> return $ FltV (fromInteger x * y)
-				_      -> throwError (CustomError "Expected integer of float")
-			FltV x -> return $ HLam $ \case
-				IntV y -> return $ FltV (x * fromInteger y)
-				FltV y -> return $ FltV (x * y)
-				_      -> throwError (CustomError "Expected integer of float")
-			_      -> throwError (CustomError "Expected integer of float")
+		mulF = Variadic (IntV 1) $ \ a b ->
+			case (a, b) of
+				(IntV x, IntV y) -> return $ IntV (x * y)
+				(IntV x, FltV y) -> return $ FltV (fromInteger x * y)
+				(FltV x, IntV y) -> return $ FltV (x * fromInteger y)
+				(FltV x, FltV y) -> return $ FltV (x * y)
+				_                -> throwError (CustomError "Expected integer of float")
 
-		divF = HLam $ \case
-			IntV x -> return $ HLam $ \case
-				IntV y -> return $ FltV (fromInteger x / fromInteger y)
-				FltV y -> return $ FltV (fromInteger x / y)
-				_      -> throwError (CustomError "Expected integer of float")
-			FltV x -> return $ HLam $ \case
-				IntV y -> return $ FltV (x / fromInteger y)
-				FltV y -> return $ FltV (x / y)
-				_      -> throwError (CustomError "Expected integer of float")
-			_      -> throwError (CustomError "Expected integer of float")
+		divF = Variadic (FltV 1) $ \ a b ->
+			case (a, b) of
+				(IntV x, IntV y) -> return $ FltV (fromInteger x / fromInteger y)
+				(IntV x, FltV y) -> return $ FltV (fromInteger x / y)
+				(FltV x, IntV y) -> return $ FltV (x / fromInteger y)
+				(FltV x, FltV y) -> return $ FltV (x / y)
+				_                -> throwError (CustomError "Expected integer of float")
 
 		printF = HLam $ \ arg -> lift (print arg) >> return UnitV

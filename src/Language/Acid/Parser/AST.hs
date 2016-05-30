@@ -25,7 +25,7 @@ data Statement
 
 data Expr
 	= Lambda Name Expr
-	| Call Expr Expr
+	| Call Expr [Expr]
 	| Variable Name
 	| Literal Literal
 
@@ -42,7 +42,7 @@ instance Show Program where
 
 
 instance Show Statement where
-	show (Define name expr) = show (Call (Call (Variable "define") (Variable name)) expr)
+	show (Define name expr) = show (Call (Variable "define") [Variable name, expr])
 	show (TLExpr expr)      = show expr
 	show (Import path)      =
 		"(import " ++ intercalate "." path ++ ")"
@@ -51,12 +51,8 @@ instance Show Statement where
 instance Show Expr where
 	show (Variable n) = n
 	show (Literal x) = show x
-	show (Call f x) =
-			"(" ++ show fn ++ concatMap (' ':) (map show args) ++ ")"
-		where
-			betaReduce (Call g arg) args = betaReduce g (arg:args)
-			betaReduce fn args = (fn, args)
-			(fn, args) = betaReduce f [x]
+	show (Call f args) =
+			"(" ++ show f ++ concatMap (' ':) (map show args) ++ ")"
 	show (Lambda param body) =
 			"(lambda (" ++ intercalate " " (reverse params) ++ ") " ++ show ctx ++ ")"
 		where
