@@ -7,7 +7,7 @@ d'exécuter un programme sans avoir besoin de le compiler.
 L'interprétation d'un AST est la réduction de chaque noeud en une unique valeur
 finale.
 
-Par exemple, si nous voulions évaluer l'expression `(+ (*3 2) 7)`, nous devrions
+Par exemple, si nous voulions évaluer l'expression `(+ (* 3 2) 7)`, nous devrions
 procéder ainsi:
 
 ```

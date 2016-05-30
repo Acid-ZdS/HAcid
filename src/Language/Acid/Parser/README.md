@@ -25,33 +25,25 @@ On dit qu'un AST est un arbre car on le représente souvent de cette manière
 Dans notre exemple, notre AST aura la valeur suivante:
 
 ```haskell
-(Call
-	(Call
-		(Variable "+")
-		(Call
-			(Call
-				(Variable "*")
-				(Literal (IntL 3)))
-			(Literal (IntL 2))))
-	(Literal (IntL 7))
+Call
+	(Variable "+")
+	[ Call
+		(Variable "*")
+		[ Literal (IntL 3)
+		, Literal (IntL 2) ]
+	, Literal (IntL 7) ]
 ```
 
-On peut remarquer que nos appels de fonctions (ici modélisés par notre
-constructeur `Call`) s'enchaînent. Il s'agit d'une propriété empruntée du
-[lambda-calcul](https://fr.wikipedia.org/wiki/Lambda-calcul): Une fonction
-à plusieurs arguments `f : (A, B, C) → T` peut s'exprimer comme une suite
-de fonctions à un seul arguments `f : A → (B → (C → D))`.
-
-Or, comme notre langage est fonctionnel, nous considérons les fonctions comme
+Comme notre langage est fonctionnel, nous considérons les fonctions comme
 des valeurs ordinaires, dites [de première classe](https://fr.wikipedia.org/wiki/Objet_de_premi%C3%A8re_classe).
 
-Ces deux propriétés nous permettent d'appeler une fonction en spécifiant
-seulement les premiers arguments:
+Cette propriété nous permet d'appeler une fonction en spécifiant seulement les
+premiers arguments:
 
 *(Voir [partial.acid](../../../../../examples/partial.acid))*
 
 ```lisp
-(define double (*2))
+(define double (* 2))
 ```
 
 On peut alors appeler notre fonction `double` de cette manière: `(double 5)`
@@ -77,8 +69,8 @@ On aurait pu écrire notre expression en utilisant la notation infixe
 pouvoir définir nos propres opérateurs) et c'est surtout pas conforme à la
 syntaxe de LISP.
 
-On pourrait imaginer un système de fonction qui supporterai à la fois des
-fonctions "normales" et des fonctions variadiques, en implémentant un nouveau
-constructeur `Variadic` à notre type `Value`. A débattre.
+Notre système de fonction supporte à la fois des fonctions "normales" et des
+fonctions variadiques, en implémentant un nouveau constructeur `Variadic` à
+notre type `Value`.
 
 [^déf_arité]: nombre d'argument qu'une fonction accepte
