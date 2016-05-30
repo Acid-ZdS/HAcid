@@ -1,5 +1,5 @@
 module Language.Acid.Parser.Rules (
-	program
+	program, programFile
 
   , statement
   , define, import', tlExpr
@@ -23,9 +23,13 @@ import Text.Parsec.String (Parser)
 import Debug.Trace
 
 
+programFile :: String -> Parser Program
+programFile path = whiteSpace >> Program (Just path) <$> many (lexeme statement)
+	            <?> "program"
+
 program :: Parser Program
-program = whiteSpace >> Program <$> many (lexeme statement)
-	   <?> "program"
+program = whiteSpace >> Program Nothing <$> many (lexeme statement)
+ 	   <?> "program"
 
 statement               :: Parser Statement
 define, import', tlExpr :: Parser Statement

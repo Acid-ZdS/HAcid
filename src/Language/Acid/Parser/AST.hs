@@ -12,7 +12,10 @@ import Data.List (intercalate)
 
 type ModPath = [String]
 
-newtype Program = Program [Statement]
+data Program = Program {
+	filepath :: Maybe FilePath
+ ,  instrs   :: [Statement]
+}
 
 
 data Statement
@@ -35,11 +38,11 @@ data Literal
 
 
 instance Show Program where
-	show (Program instrs) = unlines (map show instrs)
+	show (Program _ instrs) = unlines (map show instrs)
 
 
 instance Show Statement where
-	show (Define name expr) = show (Call (Variable "define") expr)
+	show (Define name expr) = show (Call (Call (Variable "define") (Variable name)) expr)
 	show (TLExpr expr)      = show expr
 	show (Import path)      =
 		"(import " ++ intercalate "." path ++ ")"

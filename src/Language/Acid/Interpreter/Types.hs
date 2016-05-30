@@ -7,6 +7,7 @@ import Language.Acid.Types
 import Control.Monad.Trans.Except (ExceptT)
 
 import Data.List (intercalate)
+import Text.Parsec (ParseError)
 
 
 data Value
@@ -22,6 +23,7 @@ data Value
 data EvalError
 	= Mismatch Value Value
 	| Undefined Name
+	| ImportError FilePath ParseError
 	| CustomError String
 
 
@@ -46,6 +48,9 @@ instance Show EvalError where
 
 	show (Undefined n) =
 		"Name error: undefined variable `" ++ n ++ "`."
+
+	show (ImportError path err) =
+		"Unable to import " ++ show path ++ ":\n" ++ show err
 
 	show (CustomError str) =
 		"Exception: " ++ str

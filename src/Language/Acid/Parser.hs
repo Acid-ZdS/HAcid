@@ -29,7 +29,7 @@ parseRule :: Parser a -> String -> Either ParseError a
 parseRule = flip parse "(string)" . (<* eof)
 
 parseFile :: String -> IO (Either ParseError Program)
-parseFile = (parseString <$>) . readFile
+parseFile path = parseRule (programFile path <* eof) <$> readFile path
 
 forceRight :: Show a => Either a b -> b
 forceRight x = case x of
