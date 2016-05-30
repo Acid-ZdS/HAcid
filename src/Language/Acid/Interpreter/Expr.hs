@@ -24,16 +24,21 @@ evalExpr (Literal lit) _ = return (evalLit lit)
 
 
 betaReduceMany :: [Value] -> Value -> ExceptT EvalError IO Value
-betaReduceMany []  (Variadic acc _) = return acc
+betaReduceMany []  (Variadic acc minArity fn) =
+	return $ if minArity <= 0 then
+			 	 acc
+			 else
+				 Variadic acc (minArity - 1) fn
 betaReduceMany []  fn = return fn
 betaReduceMany (x:xs) fn = do
 	newVal <- betaReduce x fn
 	betaReduceMany xs newVal
 
 betaReduce :: Value -> Value -> ExceptT EvalError IO Value
+betaReduce x (Variadic acc minArity fn) =
+	Variadic <$> fn acc x <*> pure (minArity - 1) <*> pure fn
 betaReduce x (LamV n e c)      = evalExpr e (declare n x c)
 betaReduce x (HLam fn)         = fn x
-betaReduce x (Variadic acc fn) = flip Variadic fn <$> fn acc x
 betaReduce arg notLam          = throwError (Mismatch arg notLam)
 
 evalLit :: Literal -> Value

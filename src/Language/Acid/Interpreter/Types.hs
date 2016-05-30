@@ -17,7 +17,7 @@ data Value
 	| StrV String
 	| UnitV
 	| LamV Name Expr (Scope Value)
-	| Variadic Value (Value -> Value -> ExceptT EvalError IO Value)
+	| Variadic Value Int (Value -> Value -> ExceptT EvalError IO Value)
 	| HLam (Value -> ExceptT EvalError IO Value)
 
 
