@@ -20,32 +20,29 @@ defaultEnv = Map.fromList [
 	  , ("/",     divF)
 	  , ("print", printF) ]
 	where
-		addF = Variadic (IntV 0) 2 $ \ a b ->
-			case (a, b) of
+		-- Variadic [default value] [minimum arity] [reduce function]
+		addF = Variadic (IntV 0) 2 $ \ a b -> case (a, b) of
 				(IntV x, IntV y) -> return $ IntV (x + y)
 				(IntV x, FltV y) -> return $ FltV (fromInteger x + y)
 				(FltV x, IntV y) -> return $ FltV (x + fromInteger y)
 				(FltV x, FltV y) -> return $ FltV (x + y)
 				_                -> throwError (CustomError "Expected integer of float")
 
-		subF = Variadic (IntV 0) 2 $ \ a b ->
-			case (a, b) of
+		subF = Variadic (IntV 0) 2 $ \ a b -> case (a, b) of
 				(IntV x, IntV y) -> return $ IntV (x - y)
 				(IntV x, FltV y) -> return $ FltV (fromInteger x - y)
 				(FltV x, IntV y) -> return $ FltV (x - fromInteger y)
 				(FltV x, FltV y) -> return $ FltV (x - y)
 				_                -> throwError (CustomError "Expected integer of float")
 
-		mulF = Variadic (IntV 1) 2 $ \ a b ->
-			case (a, b) of
+		mulF = Variadic (IntV 1) 2 $ \ a b -> case (a, b) of
 				(IntV x, IntV y) -> return $ IntV (x * y)
 				(IntV x, FltV y) -> return $ FltV (fromInteger x * y)
 				(FltV x, IntV y) -> return $ FltV (x * fromInteger y)
 				(FltV x, FltV y) -> return $ FltV (x * y)
 				_                -> throwError (CustomError "Expected integer of float")
 
-		divF = Variadic (FltV 1) 2 $ \ a b ->
-			case (a, b) of
+		divF = Variadic (FltV 1) 2 $ \ a b -> case (a, b) of
 				(IntV x, IntV y) -> return $ FltV (fromInteger x / fromInteger y)
 				(IntV x, FltV y) -> return $ FltV (fromInteger x / y)
 				(FltV x, IntV y) -> return $ FltV (x / fromInteger y)
