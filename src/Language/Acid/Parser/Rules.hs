@@ -1,5 +1,5 @@
 module Language.Acid.Parser.Rules (
-	program, programFile
+    program, programFile
 
   , statement
   , define, import', tlExpr
@@ -25,19 +25,19 @@ import Debug.Trace
 
 programFile :: String -> Parser Program
 programFile path = whiteSpace >> Program (Just path) <$> many (lexeme statement)
-	            <?> "program"
+	        <?> "program"
 
 program :: Parser Program
 program = whiteSpace >> Program Nothing <$> many (lexeme statement)
- 	   <?> "program"
+       <?> "program"
 
 statement               :: Parser Statement
 define, import', tlExpr :: Parser Statement
 
 statement =  try tlExpr
-		 <|> try define
+         <|> try define
          <|> import'
-		 <?> "statement"
+         <?> "statement"
 
 define  = parens (reserved "define" >> Define <$> lexeme identifier <*> expr)
 import' = parens (reserved "import" >> Import <$> modPath)
@@ -50,19 +50,19 @@ expr :: Parser Expr
 call, lambda, lit, var :: Parser Expr
 
 expr =  try lambda
-	<|> try call
-	<|> var
-	<|> lit
-	<?> "expression"
+    <|> try call
+    <|> var
+    <|> lit
+    <?> "expression"
 
 var    = Variable <$> identifier
 lit    = Literal <$> literal
 call   = parens (Call <$> lexeme expr <*> many (lexeme expr))
 lambda = parens $ do
-	reserved "lambda"
-	params <- parens (many1 (lexeme identifier))
-	body <- expr
-	return (foldr Lambda body params)
+    reserved "lambda"
+    params <- parens (many1 (lexeme identifier))
+    body <- expr
+    return (foldr Lambda body params)
 
 
 literal                       :: Parser Literal
